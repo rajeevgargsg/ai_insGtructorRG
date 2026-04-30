@@ -26,7 +26,15 @@ from core import (
     PROFILE_LABELS,
 )
 from core.pdf_generator import artifacts_to_pdf_bytes
-from core.utils import token_stats, reset_token_stats
+try:
+    from core.utils import token_stats, reset_token_stats
+except ImportError:
+    # Fallback if core/utils.py is an older version without token tracking
+    token_stats = {"prompt": 0, "completion": 0, "calls": 0}
+    def reset_token_stats():
+        token_stats["prompt"] = 0
+        token_stats["completion"] = 0
+        token_stats["calls"] = 0
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(message)s")
